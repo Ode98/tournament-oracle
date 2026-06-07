@@ -1,99 +1,70 @@
 import {
-  createRootRoute,
-  createRoute,
-  createRouter,
-  RouterProvider,
-  Outlet,
+	createRootRoute,
+	createRoute,
+	createRouter,
+	RouterProvider,
+	Outlet,
+	Navigate,
 } from "@tanstack/react-router";
-import { RegisterForm } from "./components/RegisterForm";
-import { LoginForm } from "./components/LoginForm";
-import { Container, Title, Text, Button } from "@mantine/core";
+import { Container, Text } from "@mantine/core";
 import { AuthProvider, useAuth } from "./components/AuthProvider";
-import { supabase } from "./utils/supabase";
-import { useState } from "react";
+import { Login } from "./components/Login";
+import { Dashboard } from "./components/Dashboard";
 
 const rootRoute = createRootRoute({
-  component: () => (
-    <AuthProvider>
-      <Container py="xl">
-        <Outlet />
-      </Container>
-    </AuthProvider>
-  ),
+	component: () => (
+		<AuthProvider>
+			<Container py="xl">
+				<Outlet />
+			</Container>
+		</AuthProvider>
+	),
 });
 
 const indexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  component: function IndexComponent() {
-    const { user, nickname, loading } = useAuth();
-    const [showLogin, setShowLogin] = useState(false);
+	getParentRoute: () => rootRoute,
+	path: "/",
+	component: function IndexComponent() {
+		const { user, loading } = useAuth();
 
-    if (loading) {
-      return <Text ta="center">Loading...</Text>;
-    }
+		if (loading) {
+			return <Text ta="center">Loading...</Text>;
+		}
 
-    if (user) {
-      return (
-        <>
-          <Title order={2} ta="center" mb="xl">
-            Hello {nickname || user.email}
-          </Title>
-          <Button
-            fullWidth
-            variant="light"
-            onClick={() => supabase.auth.signOut()}
-          >
-            Log out
-          </Button>
-        </>
-      );
-    }
+		if (user) {
+			return <Navigate to="/dashboard" />;
+		}
 
-    return (
-      <>
-        {showLogin ? (
-          <>
-            <Title order={2} ta="center" mb="xl">
-              Login
-            </Title>
-            <LoginForm />
-            <Text ta="center" mt="md">
-              Don't have a code?{" "}
-              <Button variant="subtle" onClick={() => setShowLogin(false)}>
-                Register
-              </Button>
-            </Text>
-          </>
-        ) : (
-          <>
-            <Title order={2} ta="center" mb="xl">
-              Register
-            </Title>
-            <RegisterForm />
-            <Text ta="center" mt="md">
-              Already have a code?{" "}
-              <Button variant="subtle" onClick={() => setShowLogin(true)}>
-                Login
-              </Button>
-            </Text>
-          </>
-        )}
-      </>
-    );
-  },
+		return <Navigate to="/login" />;
+	},
 });
 
-const routeTree = rootRoute.addChildren([indexRoute]);
+const loginRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/login",
+	component: Login,
+});
+
+const dashboardRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/dashboard",
+	component: Dashboard,
+});
+
+const routeTree = rootRoute.addChildren([
+	indexRoute,
+	loginRoute,
+	dashboardRoute,
+]);
 
 const router = createRouter({ routeTree });
 
 declare module "@tanstack/react-router" {
-  interface Register {
-    router: typeof router;
-  }
+	interface Register {
+		router: typeof router;
+	}
 }
 
 export default function App() {
-  return <RouterProvider router={router} />;
+	return <RouterProvider router={router} />;
 }

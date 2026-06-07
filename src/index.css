@@ -1,0 +1,129 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap");
+
+/* FIFA World Cup 2026 Branding Theme */
+:root {
+	--wc-bg: #0b071e;
+	--wc-card-bg: #140d2b;
+	--wc-border: rgba(124, 58, 237, 0.15);
+	--wc-border-hover: rgba(124, 58, 237, 0.3);
+	--wc-purple: #7c3aed;
+	--wc-pink: #ec008c;
+	--wc-teal: #00b5b8;
+	--wc-green: #00ff87;
+	--wc-yellow: #ffe600;
+
+	--wc-gradient-primary: linear-gradient(
+		135deg,
+		var(--wc-purple) 0%,
+		var(--wc-pink) 100%
+	);
+}
+
+/* Global resets & background */
+body {
+	background-color: var(--wc-bg) !important;
+	color: #f3f4f6 !important;
+	font-family: "Outfit", "Inter", sans-serif !important;
+	min-height: 100vh;
+}
+
+/* Premium Solid Cards (no glassmorphism/glow) */
+.mantine-Paper-root {
+	background-color: var(--wc-card-bg) !important;
+	border: 1px solid var(--wc-border) !important;
+	box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.25) !important;
+	transition: border-color 0.2s ease !important;
+}
+
+.mantine-Paper-root:hover {
+	border-color: var(--wc-border-hover) !important;
+}
+
+/* Clean Titles */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	color: #ffffff !important;
+	font-family: "Outfit", sans-serif !important;
+	letter-spacing: -0.01em;
+}
+
+.lohko-title {
+	color: #ffffff !important;
+	font-weight: 700 !important;
+	letter-spacing: 0.02em;
+}
+
+/* Styled Buttons */
+.mantine-Button-root {
+	transition: all 0.2s ease !important;
+	font-family: "Outfit", sans-serif !important;
+	font-weight: 600 !important;
+	letter-spacing: 0.01em;
+}
+
+/* Clean World Cup Purple Primary Button */
+.mantine-Button-root[data-variant="filled"],
+.mantine-Button-root[type="submit"] {
+	background-color: var(--wc-purple) !important;
+	border: 0 !important;
+	color: #ffffff !important;
+}
+
+.mantine-Button-root[data-variant="filled"]:hover,
+.mantine-Button-root[type="submit"]:hover {
+	background-color: #6d28d9 !important; /* Slightly darker purple */
+}
+
+/* Subtle pink secondary button links */
+.mantine-Button-root[data-variant="subtle"] {
+	color: var(--wc-pink) !important;
+}
+
+.mantine-Button-root[data-variant="subtle"]:hover {
+	background-color: rgba(236, 0, 140, 0.08) !important;
+}
+
+/* Inputs styling */
+.mantine-TextInput-input {
+	background-color: #070314 !important;
+	border: 1px solid var(--wc-border) !important;
+	color: #ffffff !important;
+	border-radius: 6px !important;
+	transition: border-color 0.2s ease !important;
+}
+
+.mantine-TextInput-input:focus {
+	border-color: var(--wc-purple) !important;
+}
+
+.mantine-TextInput-label {
+	color: #d1d5db !important;
+	font-family: "Outfit", sans-serif !important;
+	font-weight: 500 !important;
+	margin-bottom: 4px !important;
+}
+
+/* Alert Styling */
+.mantine-Alert-root {
+	border: 1px solid rgba(255, 255, 255, 0.05) !important;
+	border-radius: 8px !important;
+}
+
+.mantine-Alert-title {
+	font-family: "Outfit", sans-serif !important;
+	font-weight: 600 !important;
+}
+
+/* Drag grip indicator styling */
+.grip-handle {
+	color: rgba(255, 255, 255, 0.35);
+	transition: color 0.2s ease;
+}
+
+.grip-handle:hover {
+	color: var(--wc-purple);
+}
