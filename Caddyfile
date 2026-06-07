@@ -1,0 +1,3 @@
+world-cup.ottoorn.fi {
+    reverse_proxy web:80
+}
