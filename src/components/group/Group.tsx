@@ -104,8 +104,6 @@ function SortableCountry({
 	container: React.RefObject<HTMLDivElement | null>;
 	isLocked: boolean;
 }) {
-	const handleRef = useRef(null);
-
 	const { ref } = useSortable({
 		id: team.id,
 		index,
@@ -115,7 +113,6 @@ function SortableCountry({
 				element: container.current,
 			}),
 		],
-		handle: handleRef,
 		type: groupName,
 		accept: groupName,
 		group: groupName,
@@ -126,7 +123,6 @@ function SortableCountry({
 			ref={ref}
 			className="item"
 			withBorder
-			style={{ borderLeftWidth: 0 }}
 			bdrs="0 10 10 0"
 			h="60px"
 			pl="xs"
@@ -144,12 +140,7 @@ function SortableCountry({
 						<LockIcon />
 					</Flex>
 				) : (
-					<Flex
-						justify="center"
-						align="center"
-						ref={handleRef}
-						style={{ cursor: "grab" }}
-					>
+					<Flex justify="center" align="center" style={{ cursor: "grab" }}>
 						<GripHorizontal className="grip-handle" />
 					</Flex>
 				)}

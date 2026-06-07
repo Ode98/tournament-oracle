@@ -1,4 +1,4 @@
-import { Text, Alert, Button, Flex } from "@mantine/core";
+import { Text, Alert, Button, Flex, LoadingOverlay } from "@mantine/core";
 import { DragDropProvider } from "@dnd-kit/react";
 import { Lock, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -12,8 +12,20 @@ import { useQueryClient } from "@tanstack/react-query";
 
 function areArraysEqualSimple(arr1: any[], arr2: any[]): boolean {
 	if (arr1.length !== arr2.length) return false;
-	const str1 = arr1.map((obj) => JSON.stringify(obj)).sort();
-	const str2 = arr2.map((obj) => JSON.stringify(obj)).sort();
+	const pluckAndStringify = (arr: any[]) =>
+		arr
+			.map(
+				({ group_id, is_third_place_qualified, predicted_position, team_id }) =>
+					JSON.stringify({
+						group_id,
+						is_third_place_qualified,
+						predicted_position,
+						team_id,
+					}),
+			)
+			.sort();
+	const str1 = pluckAndStringify(arr1);
+	const str2 = pluckAndStringify(arr2);
 	return str1.every((str, index) => str === str2[index]);
 }
 
@@ -31,6 +43,8 @@ export function GroupPrediction({
 	groupsWithTeams: Array<IGroup & { teams: Array<ITeam> }>;
 	profileId: string;
 }) {
+	console.log("savedGroupPredictions:", savedGroupPredictions);
+
 	const queryClient = useQueryClient();
 	const { mutate: savePredictions, isPending } = useMutation({
 		mutationFn: async (
@@ -101,6 +115,8 @@ export function GroupPrediction({
 		.filter((p) => p.is_third_place_qualified)
 		.map((p) => p.team_id);
 
+	console.log("flatGroupPredictions:", flatGroupPredictions);
+
 	const isUnsavedChanges = !areArraysEqualSimple(
 		flatGroupPredictions,
 		savedGroupPredictions,
@@ -130,12 +146,12 @@ export function GroupPrediction({
 		});
 	}
 
-	const { isLocked, deadline } = usePredictionDeadline("group");
+	const { isLocked, deadline, isLockedPending } =
+		usePredictionDeadline("group");
 	const [timeLeft, setTimeLeft] = useState<string>("");
 
 	useEffect(() => {
 		if (isLocked || !deadline) return;
-
 		const updateTimer = () => {
 			const total = deadline.getTime() - new Date().getTime();
 			if (total <= 0) {
@@ -156,7 +172,6 @@ export function GroupPrediction({
 			}
 			setTimeLeft(parts.join(" "));
 		};
-
 		updateTimer();
 		const interval = setInterval(updateTimer, 1000);
 		return () => clearInterval(interval);
@@ -164,7 +179,12 @@ export function GroupPrediction({
 
 	return (
 		<>
-			{isLocked ? (
+			<LoadingOverlay
+				visible={isLockedPending}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+			/>
+			{isLocked && !isLockedPending ? (
 				<Alert
 					variant="light"
 					color="red"
@@ -175,17 +195,17 @@ export function GroupPrediction({
 					The deadline was {deadline?.toLocaleString()}.
 				</Alert>
 			) : (
-				deadline && (
-					<Alert
-						variant="light"
-						color="blue"
-						title="Predictions Open"
-						icon={<Clock size={16} />}
-						mt="md"
-					>
-						<Text fw="bold">Time remaining: {timeLeft}</Text>
-					</Alert>
-				)
+				<Alert
+					variant="light"
+					color="blue"
+					title="Predictions Open"
+					icon={<Clock size={16} />}
+					mt="md"
+				>
+					<Text fw="bold">
+						Time remaining: {isLockedPending ? "Loading..." : timeLeft}
+					</Text>
+				</Alert>
 			)}
 			<DragDropProvider
 				onDragEnd={(event) => {

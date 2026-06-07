@@ -1,4 +1,4 @@
-import { Text } from "@mantine/core";
+import { LoadingOverlay } from "@mantine/core";
 import { useAuth } from "./AuthProvider";
 import { Navigate } from "@tanstack/react-router";
 import { useGroups } from "../api_hooks/useGroups";
@@ -13,7 +13,13 @@ export function Dashboard() {
 		useGroupPredictions(user?.id);
 
 	if (loading || groupsLoading || groupPredictionsLoading) {
-		return <Text ta="center">Loading...</Text>;
+		return (
+			<LoadingOverlay
+				visible={true}
+				zIndex={1000}
+				overlayProps={{ radius: "sm", blur: 2 }}
+			/>
+		);
 	}
 
 	if (!user) {
