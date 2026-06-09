@@ -14,9 +14,12 @@ export function Header() {
 	const isDashboard = pathname === "/dashboard";
 	const currentMatch = [...matches]
 		.reverse()
-		.find((match) => match.staticData?.title);
+		.find((match) =>
+			Boolean((match.staticData as { title?: string } | undefined)?.title),
+		);
 	const title =
-		(currentMatch?.staticData?.title as string) ?? `Greetings, ${nickname}!`;
+		(currentMatch?.staticData as { title?: string } | undefined)?.title ??
+		`Greetings, ${nickname}!`;
 
 	return (
 		<Flex align="center" gap="xs" mb="xl">
