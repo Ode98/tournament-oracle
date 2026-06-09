@@ -8,14 +8,17 @@ import {
 	Text,
 	Badge,
 	Drawer,
+	Alert,
 } from "@mantine/core";
 import { useAuth } from "./AuthProvider";
 import { Navigate, Link } from "@tanstack/react-router";
 import { useProfiles } from "../api_hooks/useProfiles";
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserPredictions } from "./UserPredictions";
 import { useMediaQuery } from "@mantine/hooks";
+import { usePredictionDeadline } from "../hooks/usePredictionDeadline";
+import { Clock } from "lucide-react";
 
 function PointsBadge({ points }: { points: number }) {
 	return (
@@ -43,6 +46,36 @@ export function Dashboard() {
 
 	const isDesktop = useMediaQuery("(min-width: 768px)");
 
+	const { isLocked, deadline } = usePredictionDeadline("group");
+	const [timeLeft, setTimeLeft] = useState<string>("");
+
+	useEffect(() => {
+		if (isLocked || !deadline) return;
+		const updateTimer = () => {
+			const total = deadline.getTime() - new Date().getTime();
+			if (total <= 0) {
+				setTimeLeft("Predictions closed");
+				return;
+			}
+			const seconds = Math.floor((total / 1000) % 60);
+			const minutes = Math.floor((total / 1000 / 60) % 60);
+			const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
+			const days = Math.floor(total / (1000 * 60 * 60 * 24));
+
+			const parts = [];
+			if (days > 0) parts.push(`${days}d`);
+			if (hours > 0) parts.push(`${hours}h`);
+			if (minutes > 0) parts.push(`${minutes}m`);
+			if (days === 0 && hours === 0) {
+				parts.push(`${seconds}s`);
+			}
+			setTimeLeft(parts.join(" "));
+		};
+		updateTimer();
+		const interval = setInterval(updateTimer, 1000);
+		return () => clearInterval(interval);
+	}, [deadline, isLocked]);
+
 	if (loading || profilesLoading) {
 		return (
 			<LoadingOverlay
@@ -59,7 +92,15 @@ export function Dashboard() {
 
 	return (
 		<>
-			<Button w="100%" component={Link} to="/predictions" size="md" mb="md">
+			<Alert
+				variant="light"
+				color="blue"
+				title="Group stage predictions open"
+				icon={<Clock size={16} />}
+			>
+				<Text fw="bold">Time remaining: {timeLeft}</Text>
+			</Alert>
+			<Button w="100%" component={Link} to="/predictions" size="md" my="md">
 				Edit my Predictions
 			</Button>
 			<Paper withBorder bdrs="md" p="sm" mt="lg">
@@ -107,6 +148,7 @@ export function Dashboard() {
 					<Stack bdrs="md" align="stretch" justify="center" gap="sm" w="100%">
 						{profiles?.map((profile, index) => (
 							<Paper
+								style={{ cursor: "pointer" }}
 								onClick={() => setOpenedProfile(profile)}
 								key={profile.id}
 								h="40px"
@@ -136,6 +178,7 @@ export function Dashboard() {
 				</Flex>
 			</Paper>
 			<Drawer
+				size={isDesktop ? "md" : "xl"}
 				position={isDesktop ? "left" : "bottom"}
 				opened={!!openedProfile}
 				onClose={() => setOpenedProfile(null)}

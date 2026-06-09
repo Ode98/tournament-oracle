@@ -127,6 +127,7 @@ function SortableCountry({
 			h="60px"
 			pl="xs"
 			pr="sm"
+			style={{ cursor: "grab" }}
 		>
 			<Flex h="100%" align="center" justify="space-between">
 				<Flex gap="xs" align="center">
@@ -140,7 +141,7 @@ function SortableCountry({
 						<LockIcon />
 					</Flex>
 				) : (
-					<Flex justify="center" align="center" style={{ cursor: "grab" }}>
+					<Flex justify="center" align="center">
 						<GripHorizontal className="grip-handle" />
 					</Flex>
 				)}
