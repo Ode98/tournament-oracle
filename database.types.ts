@@ -174,17 +174,17 @@ export type Database = {
         Row: {
           id: string
           login_code: string | null
-          nickname: string | null
+          nickname: string
         }
         Insert: {
           id: string
           login_code?: string | null
-          nickname?: string | null
+          nickname: string
         }
         Update: {
           id?: string
           login_code?: string | null
-          nickname?: string | null
+          nickname?: string
         }
         Relationships: []
       }

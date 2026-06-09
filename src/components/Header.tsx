@@ -1,34 +1,35 @@
-import { Title, Flex } from "@mantine/core";
+import { Title, Flex, ActionIcon } from "@mantine/core";
 import { useAuth } from "./AuthProvider";
+import { useRouter, useMatches, useRouterState } from "@tanstack/react-router";
+import { ChevronLeft } from "lucide-react";
 
 export function Header() {
 	const { user, nickname } = useAuth();
+	const router = useRouter();
+	const matches = useMatches();
+	const pathname = useRouterState({ select: (s) => s.location.pathname });
 
 	if (!user) return null;
 
-	return (
-		<Flex justify="space-between" align="center" mb="xl">
-			<Title order={2}>Gm, {nickname}!</Title>
-			{/* <Menu shadow="md" width={200}>
-				<Menu.Target>
-					<Button
-						variant="subtle"
-						rightSection={<Avatar size="sm" radius="xl" color="blue" />}
-					>
-						{nickname || user.email}
-					</Button>
-				</Menu.Target>
+	const isDashboard = pathname === "/dashboard";
+	const currentMatch = [...matches]
+		.reverse()
+		.find((match) => match.staticData?.title);
+	const title =
+		(currentMatch?.staticData?.title as string) ?? `Greetings, ${nickname}!`;
 
-				<Menu.Dropdown>
-					<Menu.Item
-						color="red"
-						leftSection={<LogOut size={14} />}
-						onClick={() => supabase.auth.signOut()}
-					>
-						Log out
-					</Menu.Item>
-				</Menu.Dropdown>
-			</Menu> */}
+	return (
+		<Flex align="center" gap="xs" mb="xl">
+			{!isDashboard && (
+				<ActionIcon
+					size="lg"
+					variant="transparent"
+					onClick={() => router.history.back()}
+				>
+					<ChevronLeft size={30} />
+				</ActionIcon>
+			)}
+			<Title order={2}>{title}</Title>
 		</Flex>
 	);
 }

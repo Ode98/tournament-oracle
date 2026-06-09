@@ -38,10 +38,6 @@ export function ThirdPlaceSelector({
 		if (selectedTeamIds.includes(team_id)) {
 			onChange(selectedTeamIds.filter((t) => t !== team_id));
 		} else if (selectedTeamIds.length < MAX_SELECTIONS) {
-			console.log("[...selectedTeamIds, team_id]:", [
-				...selectedTeamIds,
-				team_id,
-			]);
 			onChange([...selectedTeamIds, team_id]);
 		}
 	};

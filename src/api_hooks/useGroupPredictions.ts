@@ -8,7 +8,7 @@ export function useGroupPredictions(user_id: string | undefined) {
 		.eq("profile_id", user_id ?? "");
 
 	return useQuery({
-		queryKey: ["grpoupPredictions"],
+		queryKey: ["groupPredictions", user_id],
 		queryFn: async () => {
 			const { data, error } = await groupPredictionsQuery;
 			if (error) {

@@ -10,11 +10,14 @@ import { Container, Text } from "@mantine/core";
 import { AuthProvider, useAuth } from "./components/AuthProvider";
 import { Login } from "./components/Login";
 import { Dashboard } from "./components/Dashboard";
+import { Header } from "./components/Header";
+import { Predictions } from "./components/Predictions";
 
 const rootRoute = createRootRoute({
 	component: () => (
 		<AuthProvider>
 			<Container py="xl">
+				<Header />
 				<Outlet />
 			</Container>
 		</AuthProvider>
@@ -51,10 +54,20 @@ const dashboardRoute = createRoute({
 	component: Dashboard,
 });
 
+const predictionsRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/predictions",
+	staticData: {
+		title: "My predictions",
+	},
+	component: Predictions,
+});
+
 const routeTree = rootRoute.addChildren([
 	indexRoute,
 	loginRoute,
 	dashboardRoute,
+	predictionsRoute,
 ]);
 
 const router = createRouter({ routeTree });

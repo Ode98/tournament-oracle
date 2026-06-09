@@ -1,6 +1,6 @@
 import { Text, Alert, Button, Flex, LoadingOverlay } from "@mantine/core";
 import { DragDropProvider } from "@dnd-kit/react";
-import { Lock, Clock } from "lucide-react";
+import { Lock, Clock, Info } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePredictionDeadline } from "../hooks/usePredictionDeadline";
 import { ThirdPlaceSelector } from "./ThirdPlaceSelector";
@@ -43,8 +43,6 @@ export function GroupPrediction({
 	groupsWithTeams: Array<IGroup & { teams: Array<ITeam> }>;
 	profileId: string;
 }) {
-	console.log("savedGroupPredictions:", savedGroupPredictions);
-
 	const queryClient = useQueryClient();
 	const { mutate: savePredictions, isPending } = useMutation({
 		mutationFn: async (
@@ -63,7 +61,9 @@ export function GroupPrediction({
 			if (error) throw error;
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["grpoupPredictions"] });
+			queryClient.invalidateQueries({
+				queryKey: ["groupPredictions", profileId],
+			});
 		},
 	});
 
@@ -114,8 +114,6 @@ export function GroupPrediction({
 	const thirdPlaceSelections = thirdTeamPredictions
 		.filter((p) => p.is_third_place_qualified)
 		.map((p) => p.team_id);
-
-	console.log("flatGroupPredictions:", flatGroupPredictions);
 
 	const isUnsavedChanges = !areArraysEqualSimple(
 		flatGroupPredictions,
@@ -205,6 +203,13 @@ export function GroupPrediction({
 					<Text fw="bold">
 						Time remaining: {isLockedPending ? "Loading..." : timeLeft}
 					</Text>
+				</Alert>
+			)}
+			{(!savedGroupPredictions || savedGroupPredictions.length === 0) && (
+				<Alert variant="light" color="orange" icon={<Info size={16} />} mt="md">
+					You don't have any saved predictions yet. Start by long pressing a
+					team to drag it in your preferred order to set your predictions for
+					each group. Don't forget to save your picks at the end!
 				</Alert>
 			)}
 			<DragDropProvider
