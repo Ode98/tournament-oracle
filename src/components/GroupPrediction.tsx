@@ -1,14 +1,14 @@
-import { Text, Alert, Button, Flex, LoadingOverlay } from "@mantine/core";
+import { Alert, Button, Flex } from "@mantine/core";
 import { DragDropProvider } from "@dnd-kit/react";
-import { Lock, Clock, Info } from "lucide-react";
-import { useState, useEffect } from "react";
-import { usePredictionDeadline } from "../hooks/usePredictionDeadline";
+import { Info } from "lucide-react";
+import { useState } from "react";
 import { ThirdPlaceSelector } from "./ThirdPlaceSelector";
 import { Group } from "./group/Group";
 import type { IGroupPrediction, IGroup, ITeam } from "../types";
 import { supabase } from "../utils/supabase";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
+import { useTournamentStatus } from "../hooks/useTournamentStatus";
 
 function areArraysEqualSimple(arr1: any[], arr2: any[]): boolean {
 	if (arr1.length !== arr2.length) return false;
@@ -44,6 +44,9 @@ export function GroupPrediction({
 	profileId: string;
 }) {
 	const queryClient = useQueryClient();
+	const { status } = useTournamentStatus();
+	const isLocked = status === "groupPlaying";
+
 	const { mutate: savePredictions, isPending } = useMutation({
 		mutationFn: async (
 			predictions: Array<IGroupPrediction | IClientGroupPrediction>,
@@ -144,67 +147,8 @@ export function GroupPrediction({
 		});
 	}
 
-	const { isLocked, deadline, isLockedPending } =
-		usePredictionDeadline("group");
-	const [timeLeft, setTimeLeft] = useState<string>("");
-
-	useEffect(() => {
-		if (isLocked || !deadline) return;
-		const updateTimer = () => {
-			const total = deadline.getTime() - new Date().getTime();
-			if (total <= 0) {
-				setTimeLeft("Predictions closed");
-				return;
-			}
-			const seconds = Math.floor((total / 1000) % 60);
-			const minutes = Math.floor((total / 1000 / 60) % 60);
-			const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
-			const days = Math.floor(total / (1000 * 60 * 60 * 24));
-
-			const parts = [];
-			if (days > 0) parts.push(`${days}d`);
-			if (hours > 0) parts.push(`${hours}h`);
-			if (minutes > 0) parts.push(`${minutes}m`);
-			if (days === 0 && hours === 0) {
-				parts.push(`${seconds}s`);
-			}
-			setTimeLeft(parts.join(" "));
-		};
-		updateTimer();
-		const interval = setInterval(updateTimer, 1000);
-		return () => clearInterval(interval);
-	}, [deadline, isLocked]);
-
 	return (
 		<>
-			<LoadingOverlay
-				visible={isLockedPending}
-				zIndex={1000}
-				overlayProps={{ radius: "sm", blur: 2 }}
-			/>
-			{isLocked && !isLockedPending ? (
-				<Alert
-					variant="light"
-					color="red"
-					title="Predictions Locked"
-					icon={<Lock size={16} />}
-					mt="md"
-				>
-					The deadline was {deadline?.toLocaleString()}.
-				</Alert>
-			) : (
-				<Alert
-					variant="light"
-					color="blue"
-					title="Predictions Open"
-					icon={<Clock size={16} />}
-					mt="md"
-				>
-					<Text fw="bold">
-						Time remaining: {isLockedPending ? "Loading..." : timeLeft}
-					</Text>
-				</Alert>
-			)}
 			{(!savedGroupPredictions || savedGroupPredictions.length === 0) && (
 				<Alert variant="light" color="orange" icon={<Info size={16} />} mt="md">
 					You don't have any saved predictions yet. Start by long pressing a

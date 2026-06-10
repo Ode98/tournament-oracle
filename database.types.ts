@@ -228,16 +228,19 @@ export type Database = {
           group_predictions_deadline: string
           id: number
           knockout_predictions_deadline: string
+          knockout_predictions_start: string | null
         }
         Insert: {
           group_predictions_deadline: string
           id?: number
           knockout_predictions_deadline: string
+          knockout_predictions_start?: string | null
         }
         Update: {
           group_predictions_deadline?: string
           id?: number
           knockout_predictions_deadline?: string
+          knockout_predictions_start?: string | null
         }
         Relationships: []
       }

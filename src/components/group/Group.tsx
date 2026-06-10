@@ -64,7 +64,7 @@ export function Group({
 					justify="center"
 					gap="sm"
 					ref={containerRef}
-					style={{ pointerEvents: isPending ? "none" : "all" }}
+					style={{ pointerEvents: isPending || isLocked ? "none" : "all" }}
 				>
 					{groupPredictions
 						?.sort((a, b) => a.predicted_position - b.predicted_position)

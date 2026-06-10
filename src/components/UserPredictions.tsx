@@ -1,4 +1,13 @@
-import { Flex, Loader, Paper, Title, Stack, Badge, Text } from "@mantine/core";
+import {
+	Flex,
+	Loader,
+	Paper,
+	Title,
+	Stack,
+	Badge,
+	Text,
+	Center,
+} from "@mantine/core";
 import { useGroupPredictions } from "../api_hooks/useGroupPredictions";
 import type { IGroupPrediction } from "../types";
 import { useGroups } from "../api_hooks/useGroups";
@@ -22,9 +31,16 @@ export function UserPredictions({
 		{},
 	);
 
+	if (isPending || groupsLoading) {
+		return (
+			<Center h="100%">
+				<Loader size="lg" />
+			</Center>
+		);
+	}
+
 	return (
 		<Flex direction="column" gap="8px">
-			{(isPending || groupsLoading) && <Loader size="xl" />}
 			{data?.length === 0 && !isPending && (
 				<Text mt="md">No predictions found for this profile.</Text>
 			)}
