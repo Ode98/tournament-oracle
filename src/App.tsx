@@ -9,6 +9,7 @@ import {
 import { Container, Text } from "@mantine/core";
 import { AuthProvider, useAuth } from "./components/AuthProvider";
 import { Login } from "./components/Login";
+import { Register } from "./components/Register";
 import { Dashboard } from "./components/Dashboard";
 import { Header } from "./components/Header";
 import { Predictions } from "./components/Predictions";
@@ -45,7 +46,20 @@ const indexRoute = createRoute({
 const loginRoute = createRoute({
 	getParentRoute: () => rootRoute,
 	path: "/login",
+	validateSearch: (search: Record<string, unknown>) => {
+		const result: { code?: string } = {};
+		if (typeof search.code === "string") {
+			result.code = search.code;
+		}
+		return result;
+	},
 	component: Login,
+});
+
+const registerRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/register",
+	component: Register,
 });
 
 const dashboardRoute = createRoute({
@@ -66,6 +80,7 @@ const predictionsRoute = createRoute({
 const routeTree = rootRoute.addChildren([
 	indexRoute,
 	loginRoute,
+	registerRoute,
 	dashboardRoute,
 	predictionsRoute,
 ]);

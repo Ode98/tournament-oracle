@@ -1,14 +1,19 @@
 import { useForm } from "@tanstack/react-form";
 import { TextInput, Button, Box, Text } from "@mantine/core";
 import { loginWithCode } from "../utils/auth";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export function LoginForm() {
+type LoginFormProps = {
+	initialCode?: string;
+};
+
+export function LoginForm({ initialCode }: LoginFormProps) {
 	const [error, setError] = useState<string | null>(null);
+	const autoLoginAttempted = useRef(false);
 
 	const form = useForm({
 		defaultValues: {
-			loginCode: "",
+			loginCode: initialCode?.toUpperCase() ?? "",
 		},
 		onSubmit: async ({ value }) => {
 			setError(null);
@@ -20,6 +25,22 @@ export function LoginForm() {
 			}
 		},
 	});
+
+	useEffect(() => {
+		if (!initialCode || autoLoginAttempted.current) return;
+
+		const code = initialCode.toUpperCase();
+		form.setFieldValue("loginCode", code);
+
+		if (code.length !== 8) return;
+
+		autoLoginAttempted.current = true;
+		setError(null);
+
+		loginWithCode(code).catch((err: { message?: string }) => {
+			setError(err.message || "Invalid login code");
+		});
+	}, [initialCode, form]);
 
 	return (
 		<Box maw={400} mx="auto" mt="xl">

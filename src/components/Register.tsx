@@ -1,11 +1,10 @@
 import { Title, Text, Button } from "@mantine/core";
-import { LoginForm } from "./LoginForm";
+import { RegisterForm } from "./RegisterForm";
 import { useAuth } from "./AuthProvider";
-import { Link, Navigate, useSearch } from "@tanstack/react-router";
+import { Link, Navigate } from "@tanstack/react-router";
 
-export function Login() {
+export function Register() {
 	const { user, loading } = useAuth();
-	const { code } = useSearch({ from: "/login" });
 
 	if (loading) {
 		return <Text ta="center">Loading...</Text>;
@@ -18,13 +17,13 @@ export function Login() {
 	return (
 		<>
 			<Title order={2} ta="center" mb="xl">
-				Login
+				Register
 			</Title>
-			<LoginForm initialCode={code} />
+			<RegisterForm />
 			<Text ta="center" mt="md">
-				Don't have a code?{" "}
-				<Button variant="subtle" component={Link} to="/register">
-					Register
+				Already have a code?{" "}
+				<Button variant="subtle" component={Link} to="/login">
+					Login
 				</Button>
 			</Text>
 		</>
