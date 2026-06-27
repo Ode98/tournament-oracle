@@ -10,7 +10,7 @@ import {
 } from "@mantine/core";
 import { Info, Trophy } from "lucide-react";
 import type { IGroup, IGroupPrediction, ITeam } from "../types";
-import { type IClientGroupPrediction } from "./GroupPrediction";
+import { type IClientGroupPrediction } from "./predictions/GroupPrediction";
 
 const MAX_SELECTIONS = 8;
 

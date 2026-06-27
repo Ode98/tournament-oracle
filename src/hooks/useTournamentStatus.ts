@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "../utils/supabase";
+import { useTournamentSettings } from "../api_hooks/useTournamentSettings";
 
 export type TournamentStatus =
 	| "groupPredictions"
@@ -8,12 +8,6 @@ export type TournamentStatus =
 	| "knockoutPlaying"
 	| "pending"
 	| "error";
-
-interface TournamentTimeline {
-	groupPredictionsDeadline: Date;
-	knockoutPredictionsStart: Date | null;
-	knockoutPredictionsDeadline: Date;
-}
 
 function formatTimeLeft(ms: number): string {
 	if (ms <= 0) return "0m";
@@ -30,39 +24,8 @@ function formatTimeLeft(ms: number): string {
 }
 
 export function useTournamentStatus() {
-	const [timeline, setTimeline] = useState<TournamentTimeline | null>(null);
-	const [fetchError, setFetchError] = useState<boolean>(false);
+	const { data: timeline, isError, isPending } = useTournamentSettings();
 	const [now, setNow] = useState<Date>(new Date());
-
-	useEffect(() => {
-		const fetchSettings = async () => {
-			const { data, error } = await supabase
-				.from("tournament_settings")
-				.select(
-					"group_predictions_deadline, knockout_predictions_deadline, knockout_predictions_start",
-				)
-				.eq("id", 1)
-				.single();
-
-			if (error || !data) {
-				console.error("Failed to fetch tournament settings:", error);
-				setFetchError(true);
-				return;
-			}
-
-			setTimeline({
-				groupPredictionsDeadline: new Date(data.group_predictions_deadline),
-				knockoutPredictionsDeadline: new Date(
-					data.knockout_predictions_deadline,
-				),
-				knockoutPredictionsStart: data.knockout_predictions_start
-					? new Date(data.knockout_predictions_start)
-					: null,
-			});
-		};
-
-		fetchSettings();
-	}, []);
 
 	useEffect(() => {
 		const interval = setInterval(() => {
@@ -72,11 +35,11 @@ export function useTournamentStatus() {
 		return () => clearInterval(interval);
 	}, []);
 
-	if (fetchError) {
+	if (isError) {
 		return { status: "error" as const, nextStatus: null, timeLeft: null };
 	}
 
-	if (!timeline) {
+	if (isPending || !timeline) {
 		return { status: "pending" as const, nextStatus: null, timeLeft: null };
 	}
 
@@ -106,7 +69,7 @@ export function useTournamentStatus() {
 		targetDate = knockoutPredictionsDeadline;
 	} else {
 		status = "knockoutPlaying";
-		nextStatus = null; // No upcoming status left
+		nextStatus = null;
 	}
 
 	const timeLeftMs = targetDate ? targetDate.getTime() - now.getTime() : 0;

@@ -6,7 +6,7 @@ import type { IGroup, IGroupPrediction, ITeam } from "../../types";
 import { GripHorizontal } from "lucide-react";
 import { RestrictToVerticalAxis } from "@dnd-kit/abstract/modifiers";
 import { RestrictToElement } from "@dnd-kit/dom/modifiers";
-import { type IClientGroupPrediction } from "../GroupPrediction";
+import { type IClientGroupPrediction } from "../predictions/GroupPrediction";
 
 export function Group({
 	group,

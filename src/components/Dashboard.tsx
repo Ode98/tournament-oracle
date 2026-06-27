@@ -64,11 +64,26 @@ export function Dashboard() {
 
 	return (
 		<>
-			<Button w="100%" component={Link} to="/predictions" size="md" my="md">
-				{status === "groupPredictions"
-					? "Edit my Predictions"
-					: "View my predictions"}
-			</Button>
+			{(status === "groupPredictions" || status === "groupPlaying") && (
+				<Button w="100%" component={Link} to="/predictions" size="md" my="md">
+					{status === "groupPredictions"
+						? "Edit my group predictions"
+						: "View my group predictions"}
+				</Button>
+			)}
+			{(status === "knockoutPredictions" || status === "knockoutPlaying") && (
+				<Button
+					w="100%"
+					component={Link}
+					to="/knockout-predictions"
+					size="md"
+					my="md"
+				>
+					{status === "knockoutPredictions"
+						? "Edit my knockout predictions"
+						: "View my knockout predictions"}
+				</Button>
+			)}
 			<Paper withBorder bdrs="md" p="sm" mt="sm">
 				<Title
 					className="lohko-title"
@@ -78,10 +93,12 @@ export function Dashboard() {
 				>
 					Leaderboard
 				</Title>
-				<Text mb="16px" size="sm">
-					NOTE: These points are speculative and based on the CURRENT group
-					standings, points will be locked only after group stage is over.
-				</Text>
+				{(status === "groupPredictions" || status === "groupPlaying") && (
+					<Text mb="16px" size="sm">
+						NOTE: These points are speculative and based on the CURRENT group
+						standings, points will be locked only after group stage is over.
+					</Text>
+				)}
 				<Flex>
 					<Stack bdrs="md" align="stretch" justify="center" gap="sm" w="100%">
 						{leaderboard

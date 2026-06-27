@@ -2,13 +2,13 @@ import { Alert, Button, Flex } from "@mantine/core";
 import { DragDropProvider } from "@dnd-kit/react";
 import { Info } from "lucide-react";
 import { useState } from "react";
-import { ThirdPlaceSelector } from "./ThirdPlaceSelector";
-import { Group } from "./group/Group";
-import type { IGroupPrediction, IGroup, ITeam } from "../types";
-import { supabase } from "../utils/supabase";
+import { ThirdPlaceSelector } from "../ThirdPlaceSelector";
+import { Group } from "../group/Group";
+import type { IGroupPrediction, IGroup, ITeam } from "../../types";
+import { supabase } from "../../utils/supabase";
 import { useMutation } from "@tanstack/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useTournamentStatus } from "../hooks/useTournamentStatus";
+import { useTournamentStatus } from "../../hooks/useTournamentStatus";
 
 function areArraysEqualSimple(arr1: any[], arr2: any[]): boolean {
 	if (arr1.length !== arr2.length) return false;
@@ -45,7 +45,7 @@ export function GroupPrediction({
 }) {
 	const queryClient = useQueryClient();
 	const { status } = useTournamentStatus();
-	const isLocked = status === "groupPlaying";
+	const isLocked = status !== "groupPredictions";
 
 	const { mutate: savePredictions, isPending } = useMutation({
 		mutationFn: async (

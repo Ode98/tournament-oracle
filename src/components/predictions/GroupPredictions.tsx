@@ -1,9 +1,9 @@
 import { LoadingOverlay } from "@mantine/core";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "../AuthProvider";
 import { Navigate } from "@tanstack/react-router";
-import { useGroups } from "../api_hooks/useGroups";
-import { useGroupPredictions } from "../api_hooks/useGroupPredictions";
-import { GroupPrediction } from "./GroupPrediction";
+import { useGroups } from "../../api_hooks/useGroups";
+import { useGroupPredictions } from "../../api_hooks/useGroupPredictions";
+import { GroupPrediction } from "../predictions/GroupPrediction";
 
 export function Predictions() {
 	const { user, loading } = useAuth();

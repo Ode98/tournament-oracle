@@ -12,7 +12,8 @@ import { Login } from "./components/Login";
 import { Register } from "./components/Register";
 import { Dashboard } from "./components/Dashboard";
 import { Header } from "./components/Header";
-import { Predictions } from "./components/Predictions";
+import { Predictions } from "./components/predictions/GroupPredictions";
+import { KnockoutPredictions } from "./components/predictions/KnockoutPredictions";
 
 const rootRoute = createRootRoute({
 	component: () => (
@@ -77,12 +78,22 @@ const predictionsRoute = createRoute({
 	component: Predictions,
 });
 
+const knockoutPredictionsRoute = createRoute({
+	getParentRoute: () => rootRoute,
+	path: "/knockout-predictions",
+	staticData: {
+		title: "My predictions",
+	},
+	component: KnockoutPredictions,
+});
+
 const routeTree = rootRoute.addChildren([
 	indexRoute,
 	loginRoute,
 	registerRoute,
 	dashboardRoute,
 	predictionsRoute,
+	knockoutPredictionsRoute,
 ]);
 
 const router = createRouter({ routeTree });

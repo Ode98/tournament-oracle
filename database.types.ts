@@ -84,24 +84,21 @@ export type Database = {
           away_team_id: string | null
           home_team_id: string | null
           id: number
-          match_date: string | null
-          stage: string
+          order_number: number | null
         }
         Insert: {
           actual_winner_id?: string | null
           away_team_id?: string | null
           home_team_id?: string | null
           id?: never
-          match_date?: string | null
-          stage: string
+          order_number?: number | null
         }
         Update: {
           actual_winner_id?: string | null
           away_team_id?: string | null
           home_team_id?: string | null
           id?: never
-          match_date?: string | null
-          stage?: string
+          order_number?: number | null
         }
         Relationships: [
           {
@@ -130,30 +127,23 @@ export type Database = {
       knockout_predictions: {
         Row: {
           id: string
-          match_id: number
           predicted_winner_id: string
           profile_id: string
+          round: Database["public"]["Enums"]["round"]
         }
         Insert: {
           id?: string
-          match_id: number
           predicted_winner_id: string
           profile_id: string
+          round: Database["public"]["Enums"]["round"]
         }
         Update: {
           id?: string
-          match_id?: number
           predicted_winner_id?: string
           profile_id?: string
+          round?: Database["public"]["Enums"]["round"]
         }
         Relationships: [
-          {
-            foreignKeyName: "knockout_predictions_match_id_fkey"
-            columns: ["match_id"]
-            isOneToOne: false
-            referencedRelation: "knockout_matches"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "knockout_predictions_predicted_winner_id_fkey"
             columns: ["predicted_winner_id"]
@@ -255,7 +245,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      round: "32" | "16" | "8" | "4" | "2"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -382,6 +372,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      round: ["32", "16", "8", "4", "2"],
+    },
   },
 } as const
