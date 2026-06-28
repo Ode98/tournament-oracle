@@ -11,18 +11,18 @@ import {
 } from "@mantine/core";
 import { useAuth } from "./AuthProvider";
 import { Navigate, Link } from "@tanstack/react-router";
-import { useLeaderboard } from "../api_hooks/useLeaderboard";
+import { useProfiles } from "../api_hooks/useProfiles";
 import { Star } from "lucide-react";
 import { useState } from "react";
 import { UserPredictions } from "./UserPredictions";
 import { useMediaQuery } from "@mantine/hooks";
 import { useTournamentStatus } from "../hooks/useTournamentStatus";
 
-function PointsBadge({ points }: { points: number }) {
+function PointsBadge({ points }: { points: number | null }) {
 	return (
 		<Badge variant="gradient" miw="70px">
 			<Flex w="100%" align="center" gap="2px" justify="center">
-				<Text size="sm">{points} </Text>
+				<Text size="sm">{points ?? 0} </Text>
 				<Star
 					size={16}
 					style={{
@@ -38,7 +38,7 @@ function PointsBadge({ points }: { points: number }) {
 
 export function Dashboard() {
 	const { user, loading } = useAuth();
-	const { data: leaderboard, isPending: profilesLoading } = useLeaderboard();
+	const { data: profiles, isPending: profilesLoading } = useProfiles();
 
 	const [openedProfile, setOpenedProfile] = useState<null | {
 		id: string;
@@ -101,19 +101,23 @@ export function Dashboard() {
 				)}
 				<Flex>
 					<Stack bdrs="md" align="stretch" justify="center" gap="sm" w="100%">
-						{leaderboard
-							?.sort((a, b) => (b.score || 0) - (a.score || 0))
+						{profiles
+							?.sort(
+								(a, b) =>
+									(b.group_stage_points || 0) - (a.group_stage_points || 0),
+							)
+							?.filter((i) => i.group_stage_points && i.group_stage_points > 0)
 							?.map((item, index) => {
 								return (
 									<Paper
 										style={{ cursor: "pointer" }}
 										onClick={() =>
 											setOpenedProfile({
-												id: item.profile_id,
+												id: item.id,
 												nickname: item.nickname,
 											})
 										}
-										key={item.profile_id}
+										key={item.id}
 										h="40px"
 										withBorder
 										bdrs="10"
@@ -131,7 +135,7 @@ export function Dashboard() {
 												<Flex align="center" gap="xs" h="100%" w="100%">
 													{index + 1}.<Text size="lg"> {item.nickname}</Text>
 												</Flex>
-												<PointsBadge points={item.score} />
+												<PointsBadge points={item.group_stage_points} />
 											</Flex>
 										</Flex>
 									</Paper>

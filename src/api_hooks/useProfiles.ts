@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../utils/supabase";
 
-export function useProfiles({ userId }: { userId: string | undefined }) {
-	const profilesQuery = supabase.from("profiles").select("id, nickname");
+export function useProfiles() {
+	const profilesQuery = supabase
+		.from("profiles")
+		.select("id, nickname, group_stage_points");
 
 	return useQuery({
 		queryKey: ["profiles"],
@@ -14,6 +16,5 @@ export function useProfiles({ userId }: { userId: string | undefined }) {
 			}
 			return data;
 		},
-		enabled: !!userId,
 	});
 }

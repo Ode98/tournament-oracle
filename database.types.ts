@@ -162,16 +162,19 @@ export type Database = {
       }
       profiles: {
         Row: {
+          group_stage_points: number | null
           id: string
           login_code: string | null
           nickname: string
         }
         Insert: {
+          group_stage_points?: number | null
           id: string
           login_code?: string | null
           nickname: string
         }
         Update: {
+          group_stage_points?: number | null
           id?: string
           login_code?: string | null
           nickname?: string

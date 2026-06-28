@@ -249,7 +249,7 @@ function KnockoutPredictionsPanel({ profileId }: { profileId: string }) {
 							const winnerId = predictions[match.id];
 
 							return (
-								<Stack gap={4}>
+								<Stack gap={4} my="6px">
 									<TeamRow
 										team={home}
 										isWinner={!!home && winnerId === home.id}

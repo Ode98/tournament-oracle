@@ -18,7 +18,7 @@ const tournamentStatusMap = {
 	},
 	knockoutPlaying: {
 		desc: "The knockout stage is live!",
-		nextPhaseDesc: "",
+		nextPhaseDesc: "Predictions are locked, Good Luck!",
 	},
 	pending: {
 		desc: "Loading tournament details...",
