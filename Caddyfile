@@ -1,3 +1,8 @@
 world-cup.ottoorn.fi {
     reverse_proxy web:80
 }
+
+cv.ottoorn.fi {
+    root * /var/www/cv.ottoorn.fi
+    file_server
+}
