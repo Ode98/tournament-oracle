@@ -21,7 +21,8 @@ export const TEAM_CELEBRATIONS: Record<string, TeamCelebration> = {
 	GER: {
 		name: "Germany",
 		flagPath: flagPath("Germany"),
-		anecdote: "Efficiency meets football. Zee machine is running!",
+		anecdote:
+			"Football is a simple game. Twenty-two men chase a ball for 90 minutes and at the end, the Germans win!",
 	},
 	CUR: {
 		name: "Curaçao",
@@ -51,7 +52,7 @@ export const TEAM_CELEBRATIONS: Record<string, TeamCelebration> = {
 	POR: {
 		name: "Portugal",
 		flagPath: flagPath("Portugal"),
-		anecdote: "CR7's ghost still haunts every defender!",
+		anecdote: "We came, we saw, we SIUUU.",
 	},
 	UZB: {
 		name: "Uzbekistan",
@@ -76,7 +77,7 @@ export const TEAM_CELEBRATIONS: Record<string, TeamCelebration> = {
 	FRA: {
 		name: "France",
 		flagPath: flagPath("France"),
-		anecdote: "Baguettes, berets, and back-to-back glory!",
+		anecdote: "Blue. White. Relentless. Allez Les Bleus!",
 	},
 	IRQ: {
 		name: "Iraq",
@@ -111,7 +112,7 @@ export const TEAM_CELEBRATIONS: Record<string, TeamCelebration> = {
 	ESP: {
 		name: "Spain",
 		flagPath: flagPath("Spain"),
-		anecdote: "Tiki-taka never went out of style!",
+		anecdote: "Sin balón no hay paraíso",
 	},
 	KSA: {
 		name: "Saudi Arabia",
