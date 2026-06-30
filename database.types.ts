@@ -164,18 +164,21 @@ export type Database = {
         Row: {
           group_stage_points: number | null
           id: string
+          knockout_stage_points: number | null
           login_code: string | null
           nickname: string
         }
         Insert: {
           group_stage_points?: number | null
           id: string
+          knockout_stage_points?: number | null
           login_code?: string | null
           nickname: string
         }
         Update: {
           group_stage_points?: number | null
           id?: string
+          knockout_stage_points?: number | null
           login_code?: string | null
           nickname?: string
         }

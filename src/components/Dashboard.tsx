@@ -40,6 +40,11 @@ export function Dashboard() {
 	const { user, loading } = useAuth();
 	const { data: profiles, isPending: profilesLoading } = useProfiles();
 
+	const profilesWithTotalScore = profiles?.map((p) => ({
+		...p,
+		totalScore: (p.group_stage_points ?? 0) + (p.knockout_stage_points ?? 0),
+	}));
+
 	const [openedProfile, setOpenedProfile] = useState<null | {
 		id: string;
 		nickname: string;
@@ -101,12 +106,9 @@ export function Dashboard() {
 				)}
 				<Flex>
 					<Stack bdrs="md" align="stretch" justify="center" gap="sm" w="100%">
-						{profiles
-							?.sort(
-								(a, b) =>
-									(b.group_stage_points || 0) - (a.group_stage_points || 0),
-							)
-							?.filter((i) => i.group_stage_points && i.group_stage_points > 0)
+						{profilesWithTotalScore
+							?.sort((a, b) => b.totalScore - a.totalScore)
+							?.filter((i) => i.totalScore && i.totalScore > 0)
 							?.map((item, index) => {
 								return (
 									<Paper
@@ -135,7 +137,7 @@ export function Dashboard() {
 												<Flex align="center" gap="xs" h="100%" w="100%">
 													{index + 1}.<Text size="lg"> {item.nickname}</Text>
 												</Flex>
-												<PointsBadge points={item.group_stage_points} />
+												<PointsBadge points={item.totalScore} />
 											</Flex>
 										</Flex>
 									</Paper>

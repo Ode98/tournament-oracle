@@ -4,7 +4,7 @@ import { supabase } from "../utils/supabase";
 export function useProfiles() {
 	const profilesQuery = supabase
 		.from("profiles")
-		.select("id, nickname, group_stage_points");
+		.select("id, nickname, group_stage_points, knockout_stage_points");
 
 	return useQuery({
 		queryKey: ["profiles"],
